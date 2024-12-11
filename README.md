@@ -4,13 +4,13 @@
 
 ```typescript
 import { generateText } from "ai";
+import { anthropic } from "@ai-sdk/anthropic"
 import { z } from "zod";
-import { lampEval } from "../source/evaluate.ts";
-import { lamp } from "../source/lamp.ts";
+import { lamp, eval as lampEval } from "@travisennis/lamp";
 
 // lamp function returns string
 const getFruit = lamp(
-  { model: "anthropic:haiku", maxTokens: 256, temperature: 1.0 },
+  { model: anthropic("haiku-latest"), maxTokens: 256, temperature: 1.0 },
   (n: number, color: string) => {
     return `Generate ${String(n)} kinds of ${color} fruit as a comma-separated list.`;
   },
@@ -22,7 +22,7 @@ console.log(b);
 // lamp function returns object
 const getListOfFruit = lamp(
   {
-    model: "anthropic:sonnet",
+    model: anthropic(sonnet-latest"),
     schema: z.object({ fruits: z.array(z.string()) }),
     maxTokens: 256,
     temperature: 1.0,
@@ -62,7 +62,7 @@ await runEvaluation();
 // More complicated example
 const countAnimalLegs = lamp(
   {
-    model: "anthropic:haiku",
+    model: anthropic("haiku-latest"),
     maxTokens: 500,
   },
   (statement: string) => {
