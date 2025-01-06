@@ -1,39 +1,39 @@
 {
-	"name": "@travisennis/lamp",
-	"version": "0.0.0",
-	"description": "A language model program API.",
-	"type": "module",
-	"exports": {
-		"types": "./dist/index.d.ts",
-		"default": "./dist/index.js"
-	},
-	"keywords": ["cli", "ai", "llm"],
-	"author": "Travis Ennis",
-	"license": "MIT",
-	"scripts": {
-		"build": "npm run compile",
-		"clean": "rm -rf ./dist/",
-		"compile": "rm -rf ./dist && tsc && cp -r ./dist/source/. ./dist && rm -rf ./dist/source",
-		"lint": "biome lint",
-		"lint:fix": "biome lint --unsafe --write",
-		"lint:staged": "biome lint --error-on-warnings --no-errors-on-unmatched --staged",
-		"prepare": "npm run compile",
-		"test": "node --import tsx --test test/**/*.test.ts",
-		"pretest": "npm run compile",
-		"format": "biome format --write",
-		"dev": "tsx ./source/index.ts",
-		"oxlint": "npx oxlint@latest --ignore-path .gitignore --deny correctness --deny suspicous --deny pedantic --deny style --node-plugin",
-		"knip": "npx knip",
-		"check": "npx npm-check-updates  --interactive --format group"
-	},
-	"dependencies": {
-		"ai": "^4.0.22",
-		"zod": "^3.24.1"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@types/node": "^22.10.2",
-		"tsx": "^4.19.2",
-		"typescript": "^5.7.2"
-	}
+  "name": "@travisennis/lamp",
+  "version": "0.0.0",
+  "description": "A language model program API.",
+  "type": "module",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
+  },
+  "keywords": ["cli", "ai", "llm"],
+  "author": "Travis Ennis",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run compile",
+    "clean": "rm -rf ./dist/",
+    "compile": "rm -rf ./dist && tsc && cp -r ./dist/source/. ./dist && rm -rf ./dist/source",
+    "lint": "biome lint",
+    "lint:fix": "biome lint --unsafe --write",
+    "lint:staged": "biome lint --error-on-warnings --no-errors-on-unmatched --staged",
+    "prepare": "npm run compile",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "pretest": "npm run compile",
+    "format": "biome format --write",
+    "dev": "tsx ./source/index.ts",
+    "oxlint": "npx oxlint@latest --ignore-path .gitignore --deny correctness --deny suspicous --deny pedantic --deny style --node-plugin",
+    "knip": "npx knip",
+    "check": "npx npm-check-updates  --interactive --format group"
+  },
+  "dependencies": {
+    "ai": "^4.0.26",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
 }
