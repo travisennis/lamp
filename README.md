@@ -3,7 +3,6 @@
 ## Usage
 
 ```typescript
-import { generateText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic"
 import { z } from "zod";
 import { lamp, eval as lampEval } from "@travisennis/lamp";
@@ -22,7 +21,7 @@ console.log(b);
 // lamp function returns object
 const getListOfFruit = lamp(
   {
-    model: anthropic(sonnet-latest"),
+    model: anthropic("sonnet-latest"),
     schema: z.object({ fruits: z.array(z.string()) }),
     maxTokens: 256,
     temperature: 1.0,
