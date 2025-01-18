@@ -1,4 +1,5 @@
 import {
+  type CoreTool,
   type LanguageModel,
   type Schema,
   generateObject,
@@ -165,8 +166,15 @@ export type LMPResponseObject<T> = T extends { object: infer U } ? U : never;
  * @param promptFn Function that generates the prompt
  * @returns A function that processes the prompt and returns text
  */
-export function lamp<T extends LMPPromptFunction>(
-  { model, ...settings }: { model: LanguageModel } & ModelSettings,
+export function lamp<
+  T extends LMPPromptFunction,
+  TOOLS extends Record<string, CoreTool>,
+>(
+  {
+    model,
+    tools,
+    ...settings
+  }: { model: LanguageModel; tools?: TOOLS } & ModelSettings,
   promptFn: T,
 ): (...args: Parameters<T>) => Promise<{
   text: string;
@@ -180,23 +188,35 @@ export function lamp<T extends LMPPromptFunction>(
  * @param promptFn Function that generates the prompt
  * @returns A function that processes the prompt and returns an object
  */
-export function lamp<T extends LMPPromptFunction, U>(
+export function lamp<
+  T extends LMPPromptFunction,
+  TOOLS extends Record<string, CoreTool>,
+  U,
+>(
   {
     model,
     schema,
+    tools,
     ...settings
-  }: { model: LanguageModel } & ModelSettings & Required<ObjectSettings<U>>,
+  }: { model: LanguageModel; tools?: TOOLS } & ModelSettings &
+    Required<ObjectSettings<U>>,
   promptFn: T,
 ): (...args: Parameters<T>) => Promise<{
   object: U;
   usage: Usage;
 }>;
-export function lamp<T extends LMPPromptFunction, U = never>(
+export function lamp<
+  T extends LMPPromptFunction,
+  TOOLS extends Record<string, CoreTool>,
+  U = never,
+>(
   {
     model,
     schema,
+    tools,
     ...settings
-  }: { model: LanguageModel } & ModelSettings & ObjectSettings<U>, // & NSettings,
+  }: { model: LanguageModel; tools?: TOOLS } & ModelSettings &
+    ObjectSettings<U>, // & NSettings,
   promptFn: T,
 ): LMPFunction<T, U> {
   return async (...args: Parameters<T>): Promise<LMPFunctionResult<U>> => {
@@ -209,9 +229,21 @@ export function lamp<T extends LMPPromptFunction, U = never>(
 
     let result: { text?: string; object?: U; usage: Usage };
     if (schema) {
-      result = await getObject<U>(model, system, prompt, schema, settings);
+      result = await generateObject({
+        model,
+        system,
+        prompt,
+        schema,
+        ...settings,
+      });
     } else {
-      result = await getText(model, system, prompt, settings);
+      result = await generateText({
+        model,
+        system,
+        prompt,
+        tools,
+        ...settings,
+      });
     }
 
     if (settings.debug) {
@@ -226,59 +258,6 @@ export function lamp<T extends LMPPromptFunction, U = never>(
       ...result,
     } as LMPFunctionResult<U>;
   };
-}
-
-/**
- * Generates an object using the language model with schema validation
- * @template U The type of object to be generated
- * @param model The language model to use
- * @param system Optional system message
- * @param prompt The prompt to send to the model
- * @param schema Schema for validating the generated object
- * @param settings Additional model settings
- * @returns The generated object and usage statistics
- */
-async function getObject<U>(
-  model: LanguageModel,
-  system: string | undefined,
-  prompt: string,
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  schema: z.Schema<U, z.ZodTypeDef, any> | Schema<U>,
-  settings: ModelSettings,
-) {
-  const { object, usage } = await generateObject({
-    model,
-    system,
-    prompt,
-    schema,
-    ...settings,
-  });
-
-  return { object, usage };
-}
-
-/**
- * Generates text using the language model
- * @param model The language model to use
- * @param system Optional system message
- * @param prompt The prompt to send to the model
- * @param settings Additional model settings
- * @returns The generated text and usage statistics
- */
-async function getText(
-  model: LanguageModel,
-  system: string | undefined,
-  prompt: string,
-  settings: ModelSettings,
-) {
-  const { text, usage } = await generateText({
-    model,
-    system,
-    prompt,
-    ...settings,
-  });
-
-  return { text, usage };
 }
 
 /**
