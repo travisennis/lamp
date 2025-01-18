@@ -27,8 +27,8 @@
     "check": "npx npm-check-updates  --interactive --format group"
   },
   "peerDependencies": {
-    "ai": "^4.0.26",
-    "zod": "^3.24.1"
+    "ai": "^4.x",
+    "zod": "^3.x"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
